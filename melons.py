@@ -15,6 +15,9 @@ class AbstractMelonOrder(object):
         self.order_type = order_type
         self.tax = tax
 
+        if qty > 100:
+            raise TooManyMelonsError
+
     def get_base_price(self):
         """Gets random base price."""
         right_now = datetime.now()
@@ -23,6 +26,7 @@ class AbstractMelonOrder(object):
 
         start_rush_hour = time(8, 0, 0)
         end_rush_hour = time(11, 0, 0)
+        print "now", right_now, "tod", time_of_day, "srh", start_rush_hour, "erh", end_rush_hour
         splurge_charge = 0
         if day_of_week < 6 and time_of_day > start_rush_hour and time_of_day < end_rush_hour:
             splurge_charge = 4
@@ -83,3 +87,7 @@ class GovernmentMelonOrder(AbstractMelonOrder):
             self.passed_inspection = True
         else:
             self.passed_inspection = False
+
+class TooManyMelonsError(ValueError):
+    def __init__(self):
+        super(TooManyMelonsError, self).__init__("No more than 100 melons!")
